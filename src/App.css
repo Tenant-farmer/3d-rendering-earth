@@ -607,6 +607,10 @@ body.app--light {
   height: 100%;
 }
 
+.globe-canvas--mono {
+  filter: grayscale(1) contrast(1.1) brightness(0.92);
+}
+
 /* ── Theme switcher ── */
 .theme-switcher {
   position: fixed;
@@ -615,10 +619,10 @@ body.app--light {
   transform: translateX(-50%);
   z-index: 10;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   padding: 8px;
-  max-width: min(900px, 96vw);
+  max-width: min(960px, 96vw);
   border-radius: 18px;
   background: rgba(8, 10, 16, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -695,6 +699,75 @@ body.app--light {
 .theme-i .theme-switcher__btn--active {
   border-color: rgba(100, 116, 139, 0.35);
   background: rgba(148, 163, 184, 0.12);
+}
+
+/* ── Theme J: Cartographic Noir ── */
+.theme-j.landing-container {
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(30, 41, 59, 0.5) 0%, transparent 65%),
+    radial-gradient(circle at 50% 50%, #0a0a0b 0%, #030303 100%);
+}
+
+.theme-j .scene-vignette {
+  background: radial-gradient(
+    ellipse 72% 68% at 50% 50%,
+    transparent 38%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+}
+
+/* ── Theme K: Cartographic Paper (Light) ── */
+.theme-k.landing-container {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255, 255, 255, 0.95) 0%, transparent 60%),
+    linear-gradient(180deg, #fafafa 0%, #ececec 100%);
+}
+
+.theme-k .scene-vignette {
+  background: radial-gradient(
+    ellipse 75% 70% at 50% 50%,
+    transparent 45%,
+    rgba(148, 163, 184, 0.12) 100%
+  );
+}
+
+.theme-k .globe-canvas--mono {
+  filter: grayscale(1) contrast(1.06) brightness(1.08);
+}
+
+/* ── Theme L: Cartographic Wire ── */
+.theme-l.landing-container {
+  background:
+    radial-gradient(ellipse 75% 55% at 50% 48%, rgba(51, 65, 85, 0.35) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, #111318 0%, #060608 100%);
+}
+
+.theme-l .scene-vignette {
+  background: radial-gradient(
+    ellipse 70% 65% at 50% 50%,
+    transparent 35%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+.theme-l .globe-orbit-ring {
+  border-color: rgba(148, 163, 184, 0.12);
+  box-shadow: 0 0 60px rgba(148, 163, 184, 0.06);
+}
+
+.theme-j .theme-switcher__btn--active {
+  border-color: rgba(248, 250, 252, 0.35);
+  background: rgba(248, 250, 252, 0.08);
+}
+
+.theme-k .theme-switcher__btn--active {
+  border-color: rgba(15, 23, 42, 0.25);
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.theme-l .theme-switcher__btn--active {
+  border-color: rgba(203, 213, 225, 0.3);
+  background: rgba(148, 163, 184, 0.1);
 }
 
 .theme-switcher--light {

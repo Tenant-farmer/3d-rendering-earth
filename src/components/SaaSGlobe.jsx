@@ -1,8 +1,10 @@
 import { useRef, useEffect, useMemo, useCallback } from 'react';
 import Globe from 'react-globe.gl';
 import { userData } from '../data/userData';
+import { countryLabels } from '../data/countryLabels';
 import { ARC_LINKS } from '../themes/globeThemes';
 import { buildRingLayers } from '../utils/buildRingLayers';
+import { buildLatLngGrid } from '../utils/buildLatLngGrid';
 import { createPointMarker } from '../utils/pointMarkers';
 import '../styles/globeMarkers.css';
 
@@ -28,6 +30,11 @@ const SaaSGlobe = ({ theme }) => {
 
   const ringsData = useMemo(() => buildRingLayers(userData, config), [config]);
 
+  const gridPaths = useMemo(
+    () => (config.showLatLngGrid ? buildLatLngGrid(config.gridStep ?? 30) : []),
+    [config.showLatLngGrid, config.gridStep],
+  );
+
   const htmlElement = useCallback(
     (point) => createPointMarker(point, { ...config.pointStyle, isLight: theme.isLight }),
     [config.pointStyle, theme.isLight],
@@ -47,16 +54,35 @@ const SaaSGlobe = ({ theme }) => {
     globeEl.current.pointOfView(config.pointOfView);
   }, [config]);
 
+  const canvasClass = ['globe-canvas', config.grayscale ? 'globe-canvas--mono' : '']
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <div className="globe-canvas">
+    <div className={canvasClass}>
       <Globe
         ref={globeEl}
         backgroundColor="rgba(0,0,0,0)"
         globeImageUrl={config.globeImageUrl}
-        bumpImageUrl={config.bumpImageUrl}
+        {...(config.bumpImageUrl ? { bumpImageUrl: config.bumpImageUrl } : {})}
         showAtmosphere
         atmosphereColor={config.atmosphereColor}
         atmosphereAltitude={config.atmosphereAltitude}
+        pathsData={gridPaths}
+        pathPoints="points"
+        pathPointLat={(p) => p[0]}
+        pathPointLng={(p) => p[1]}
+        pathColor={() => config.gridColor ?? 'rgba(255,255,255,0.12)'}
+        pathStroke={0.12}
+        labelsData={config.showCountryLabels ? countryLabels : []}
+        labelLat="lat"
+        labelLng="lng"
+        labelText="name"
+        labelSize={(d) => d.size}
+        labelColor={() => config.labelColor ?? 'rgba(255,255,255,0.6)'}
+        labelIncludeDot={false}
+        labelResolution={2}
+        labelsTransitionDuration={0}
         htmlElementsData={userData}
         htmlLat="lat"
         htmlLng="lng"
