@@ -29,8 +29,8 @@ const SaaSGlobe = ({ theme }) => {
   const ringsData = useMemo(() => buildRingLayers(userData, config), [config]);
 
   const htmlElement = useCallback(
-    (point) => createPointMarker(point, config.pointStyle),
-    [config.pointStyle],
+    (point) => createPointMarker(point, { ...config.pointStyle, isLight: theme.isLight }),
+    [config.pointStyle, theme.isLight],
   );
 
   useEffect(() => {

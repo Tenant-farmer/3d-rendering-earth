@@ -397,3 +397,88 @@
   0% { transform: scale(0.5); opacity: 0.8; }
   100% { transform: scale(2); opacity: 0; }
 }
+
+/* ── Light mode: high-contrast markers ── */
+.globe-marker--light {
+  filter: drop-shadow(0 2px 6px rgba(15, 23, 42, 0.35));
+}
+
+.globe-marker--light .globe-marker__pin {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 2px 12px rgba(15, 23, 42, 0.22),
+    0 0 0 2.5px rgba(15, 23, 42, 0.16);
+  z-index: 0;
+}
+
+.globe-marker--light [class*='globe-marker__'] {
+  z-index: 1;
+}
+
+.globe-marker--light.globe-marker--beacon .globe-marker__core {
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 14px var(--marker-glow);
+}
+
+.globe-marker--light.globe-marker--beacon .globe-marker__wave {
+  border-width: 2px;
+  border-color: var(--marker-color);
+}
+
+.globe-marker--light.globe-marker--radar .globe-marker__core {
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 16px var(--marker-glow);
+}
+
+.globe-marker--light.globe-marker--radar .globe-marker__disc {
+  border-width: 2px;
+  border-color: color-mix(in srgb, var(--marker-color) 70%, transparent);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--marker-color) 18%, transparent) 0%,
+    transparent 70%
+  );
+}
+
+.globe-marker--light.globe-marker--radar .globe-marker__sweep {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in srgb, var(--marker-color) 75%, transparent) 32deg,
+    transparent 64deg
+  );
+}
+
+.globe-marker--light.globe-marker--radar .globe-marker__blip {
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+.globe-marker--light.globe-marker--spark .globe-marker__star {
+  background: radial-gradient(
+    circle,
+    var(--marker-color) 0%,
+    var(--marker-glow) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85);
+}
+
+.globe-marker--light.globe-marker--spark .globe-marker__halo {
+  border-width: 2px;
+  border-color: color-mix(in srgb, var(--marker-color) 55%, transparent);
+}
+
+.globe-marker--light.globe-marker--spark .globe-marker__twinkle {
+  width: 3px;
+  height: 3px;
+  background: var(--marker-color);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
