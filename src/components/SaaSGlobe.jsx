@@ -1,46 +1,92 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo, useCallback } from 'react';
 import Globe from 'react-globe.gl';
 import { userData } from '../data/userData';
+import { ARC_LINKS } from '../themes/globeThemes';
+import { buildRingLayers } from '../utils/buildRingLayers';
+import { createPointMarker } from '../utils/pointMarkers';
+import '../styles/globeMarkers.css';
 
-const SaaSGlobe = () => {
+const SaaSGlobe = ({ theme }) => {
   const globeEl = useRef();
+  const { globe: config } = theme;
+  const arcLinks = config.arcLinks ?? ARC_LINKS;
+
+  const arcsData = useMemo(
+    () =>
+      arcLinks.map(([from, to]) => {
+        const start = userData.find((d) => d.city === from);
+        const end = userData.find((d) => d.city === to);
+        return {
+          startLat: start.lat,
+          startLng: start.lng,
+          endLat: end.lat,
+          endLng: end.lng,
+        };
+      }),
+    [arcLinks],
+  );
+
+  const ringsData = useMemo(() => buildRingLayers(userData, config), [config]);
+
+  const htmlElement = useCallback(
+    (point) => createPointMarker(point, config.pointStyle),
+    [config.pointStyle],
+  );
 
   useEffect(() => {
-    if (globeEl.current) {
-      const controls = globeEl.current.controls();
+    if (!globeEl.current) return;
 
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.5;
-      controls.minDistance = 150;
-      controls.maxDistance = 400;
+    const controls = globeEl.current.controls();
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = config.autoRotateSpeed;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.minDistance = 180;
+    controls.maxDistance = 360;
 
-      globeEl.current.pointOfView({ lat: 25, lng: 120, altitude: 2.2 });
-    }
-  }, []);
+    globeEl.current.pointOfView(config.pointOfView);
+  }, [config]);
 
   return (
-    <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+    <div className="globe-canvas">
       <Globe
         ref={globeEl}
         backgroundColor="rgba(0,0,0,0)"
-        globeImageUrl="https://unpkg.com/three-globe/example/img/earth-night.jpg"
-        showAtmosphere={true}
-        atmosphereColor="#FFE066"
-        atmospherePower={3.5}
-        pointsData={userData}
-        pointLat="lat"
-        pointLng="lng"
-        pointColor={() => '#FFD700'}
-        pointAltitude={0.05}
-        pointRadius={(d) => d.value * 0.15}
-        pointsMerge={true}
-        ringsData={userData}
+        globeImageUrl={config.globeImageUrl}
+        bumpImageUrl={config.bumpImageUrl}
+        showAtmosphere
+        atmosphereColor={config.atmosphereColor}
+        atmosphereAltitude={config.atmosphereAltitude}
+        htmlElementsData={userData}
+        htmlLat="lat"
+        htmlLng="lng"
+        htmlAltitude={0.004}
+        htmlElement={htmlElement}
+        htmlElementVisibilityModifier={(el, isVisible) => {
+          el.style.opacity = isVisible ? 1 : 0;
+        }}
+        htmlTransitionDuration={0}
+        ringsData={ringsData}
         ringLat="lat"
         ringLng="lng"
-        ringColor={() => (t) => `rgba(255, 215, 0, ${1 - t})`}
-        ringMaxRadius={(d) => d.value * 2.5}
-        ringPropagationSpeed={1.5}
-        ringRepeatPeriod={1600}
+        ringColor={(d) => (t) => {
+          const opacity = (1 - t) * config.ringOpacity * (d._opacityMult ?? 1);
+          return `rgba(${config.ringRgb}, ${opacity})`;
+        }}
+        ringMaxRadius={(d) => d.value * (d._radiusScale ?? config.ringMaxRadiusScale)}
+        ringPropagationSpeed={(d) => d._speed ?? config.ringPropagationSpeed}
+        ringRepeatPeriod={(d) => d._period ?? config.ringRepeatPeriod}
+        arcsData={config.showArcs ? arcsData : []}
+        arcStartLat="startLat"
+        arcStartLng="startLng"
+        arcEndLat="endLat"
+        arcEndLng="endLng"
+        arcColor={() => config.arcColor ?? 'transparent'}
+        arcAltitude={config.arcAltitude ?? 0.15}
+        arcStroke={config.arcStroke ?? 0.3}
+        arcDashLength={config.arcDashLength ?? 1}
+        arcDashGap={config.arcDashGap ?? 0}
+        arcDashAnimateTime={config.arcDashAnimateTime ?? 0}
         onZoom={() => {}}
       />
     </div>

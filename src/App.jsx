@@ -1,37 +1,38 @@
-import SaaSGlobe from './components/SaaSGlobe';
+import { useState } from 'react';
+import GlobeScene from './components/GlobeScene';
+import { GLOBE_THEMES, THEME_IDS } from './themes/globeThemes';
 import './App.css';
 
 function App() {
-  return (
-    <div className="landing-container">
-      <section className="hero-section">
-        <div className="hero-text">
-          <span className="badge">Global Scalability</span>
-          <h1>
-            전 세계 고객이
-            <br />
-            실시간으로 신뢰하는 SaaS
-          </h1>
-          <p>
-            우리 서비스는 대륙을 넘어 24시간 안전하게 작동하고 있습니다.
-            <br />
-            실시간으로 연결되어 반짝이는 고객들의 네트워크를 확인하세요.
-          </p>
-          <div className="btn-group">
-            <button type="button" className="btn-primary">
-              시작하기
-            </button>
-            <button type="button" className="btn-secondary">
-              데모 보기
-            </button>
-          </div>
-        </div>
+  const [activeTheme, setActiveTheme] = useState('a');
+  const theme = GLOBE_THEMES[activeTheme];
 
-        <div className="hero-globe">
-          <div className="globe-bg-glow" />
-          <SaaSGlobe />
-        </div>
-      </section>
+  return (
+    <div className={`landing-container theme-${activeTheme}`}>
+      <GlobeScene theme={theme} />
+
+      <nav className="theme-switcher" aria-label="디자인 테마 선택">
+        {THEME_IDS.map((id) => {
+          const item = GLOBE_THEMES[id];
+          const isActive = activeTheme === id;
+
+          return (
+            <button
+              key={id}
+              type="button"
+              className={`theme-switcher__btn${isActive ? ' theme-switcher__btn--active' : ''}`}
+              aria-pressed={isActive}
+              onClick={() => setActiveTheme(id)}
+            >
+              <span className="theme-switcher__label">{item.label}</span>
+              <span className="theme-switcher__meta">
+                <strong>{item.name}</strong>
+                <small>{item.tagline}</small>
+              </span>
+            </button>
+          );
+        })}
+      </nav>
     </div>
   );
 }
