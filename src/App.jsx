@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GlobeScene from './components/GlobeScene';
 import { GLOBE_THEMES, THEME_IDS } from './themes/globeThemes';
 import './App.css';
@@ -7,11 +7,19 @@ function App() {
   const [activeTheme, setActiveTheme] = useState('a');
   const theme = GLOBE_THEMES[activeTheme];
 
+  useEffect(() => {
+    document.body.classList.toggle('app--light', Boolean(theme.isLight));
+    return () => document.body.classList.remove('app--light');
+  }, [theme.isLight]);
+
   return (
     <div className={`landing-container theme-${activeTheme}`}>
       <GlobeScene theme={theme} />
 
-      <nav className="theme-switcher" aria-label="디자인 테마 선택">
+      <nav
+        className={`theme-switcher${theme.isLight ? ' theme-switcher--light' : ''}`}
+        aria-label="디자인 테마 선택"
+      >
         {THEME_IDS.map((id) => {
           const item = GLOBE_THEMES[id];
           const isActive = activeTheme === id;

@@ -19,6 +19,18 @@ const GlobeScene = ({ theme }) => (
     {theme.showGrid && (
       <div className="scene-grid" aria-hidden="true" />
     )}
+    {theme.showSoftLight && (
+      <div className="scene-soft-light" aria-hidden="true" />
+    )}
+    {theme.showCloudWash && (
+      <>
+        <div className="scene-cloud scene-cloud--left" aria-hidden="true" />
+        <div className="scene-cloud scene-cloud--right" aria-hidden="true" />
+      </>
+    )}
+    {theme.showPaperTexture && (
+      <div className="scene-paper" aria-hidden="true" />
+    )}
 
     <section className="hero-section">
       <div className="globe-stage">
